@@ -1,0 +1,157 @@
+.signup-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+}
+
+.signup-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 32px 28px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.signup-title {
+  margin: 0 0 4px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.signup-subtitle {
+  margin: 0 0 24px;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.signup-group {
+  margin-bottom: 18px;
+}
+
+.signup-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.signup-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.signup-input:focus {
+  border-color: #b45309;
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.2);
+}
+
+.signup-input-error {
+  border-color: #dc2626;
+}
+
+/* Deja lugar para el ícono del ojo dentro del campo de contraseña */
+.signup-input-password {
+  padding-right: 44px;
+}
+
+.signup-password-wrapper {
+  position: relative;
+}
+
+.signup-eye-button {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  font-size: 1.1rem;
+  color: #6b7280;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.signup-eye-button:hover {
+  color: #b45309;
+}
+
+.signup-error {
+  margin: 6px 0 0;
+  font-size: 0.82rem;
+  color: #dc2626;
+}
+
+.signup-terms {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.signup-terms input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #b45309;
+  cursor: pointer;
+}
+
+.signup-terms-label {
+  font-size: 0.9rem;
+  color: #374151;
+  cursor: pointer;
+}
+
+.signup-button {
+  width: 100%;
+  padding: 11px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: #b45309;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.signup-button:hover:not(:disabled) {
+  background: #92400e;
+}
+
+.signup-button:disabled {
+  background: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.signup-footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.signup-footer a {
+  font-weight: 600;
+  color: #b45309;
+  text-decoration: none;
+}
+
+.signup-footer a:hover {
+  text-decoration: underline;
+}

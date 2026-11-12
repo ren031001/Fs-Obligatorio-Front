@@ -1,0 +1,81 @@
+.plan-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.plan-pagina-titulo {
+  margin: 0 0 20px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.plan-grilla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.plan-card {
+  flex: 1;
+  min-width: 280px;
+  box-sizing: border-box;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.plan-titulo {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.plan-numero {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.plan-texto {
+  margin: 8px 0 16px;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.plan-barra {
+  height: 12px;
+  overflow: hidden;
+  background: #e5e7eb;
+  border-radius: 999px;
+}
+
+.plan-barra-relleno {
+  height: 100%;
+  background: #2563eb;
+  transition: width 0.4s;
+}
+
+.plan-boton {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #f59e0b;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+}
+
+.plan-boton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.plan-mensaje {
+  text-align: center;
+  color: #6b7280;
+}

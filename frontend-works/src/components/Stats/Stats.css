@@ -1,0 +1,47 @@
+.stats-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.stats-titulo {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.stats-subtitulo {
+  margin: 4px 0 20px;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.stats-grilla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.stats-card {
+  flex: 1;
+  min-width: 300px;
+  box-sizing: border-box;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stats-card-titulo {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.stats-mensaje {
+  padding: 40px 16px;
+  text-align: center;
+  color: #6b7280;
+}

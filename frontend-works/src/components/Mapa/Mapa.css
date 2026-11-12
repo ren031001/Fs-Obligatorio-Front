@@ -1,0 +1,52 @@
+.mapa-pagina {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.mapa-titulo {
+  margin: 0 0 16px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.mapa-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mapa-boton {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.mapa-boton:hover {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+
+.mapa-contenedor {
+  height: 520px;
+  width: 100%;
+  border-radius: 12px;
+}
+
+.mapa-popup-imagen {
+  display: block;
+  width: 140px;
+  margin-top: 6px;
+  border-radius: 6px;
+}
+
+.mapa-mensaje {
+  padding: 16px;
+  text-align: center;
+  color: #6b7280;
+}

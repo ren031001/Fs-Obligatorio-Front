@@ -1,0 +1,159 @@
+.editar-obra-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(17, 24, 39, 0.6);
+  z-index: 1000;
+}
+
+.editar-obra-modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 28px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  outline: none;
+}
+
+.editar-obra-title {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.editar-obra-direccion {
+  margin: 0 0 20px;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.editar-obra-direccion span {
+  font-style: italic;
+}
+
+.editar-obra-group {
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+.editar-obra-fila {
+  display: flex;
+  gap: 12px;
+}
+
+.editar-obra-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.editar-obra-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.editar-obra-input:focus {
+  border-color: #b45309;
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.2);
+}
+
+.editar-obra-input-error {
+  border-color: #dc2626;
+}
+
+.editar-obra-error {
+  margin: 6px 0 0;
+  font-size: 0.82rem;
+  color: #dc2626;
+}
+
+.editar-obra-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.editar-obra-cancelar {
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.editar-obra-cancelar:hover {
+  background: #f3f4f6;
+}
+
+.editar-obra-guardar {
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: #b45309;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.editar-obra-guardar:hover:not(:disabled) {
+  background: #92400e;
+}
+
+.editar-obra-guardar:disabled {
+  background: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+@media (max-width: 520px) {
+  .editar-obra-fila {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+.editar-obra-imagenes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.editar-obra-imagenes img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.editar-obra-subida {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
