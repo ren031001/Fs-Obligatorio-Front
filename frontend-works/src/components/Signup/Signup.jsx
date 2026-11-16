@@ -42,7 +42,7 @@ const Signup = () => {
       if (response.data?.token) {
         localStorage.setItem("token", response.data.token);
         toast.success("Bienvenido");
-        await navigate("/Works");
+        await navigate("/works");
       }
     } catch (error) {
       console.log(error.response);

@@ -1,36 +1,13 @@
-import { useEffect, useState } from "react";
-import Modal from "react-modal";
-import toast from "react-hot-toast";
-import { axiosConfig } from "../../utils/axiosConfig";
-import "./EditWorkModal.css";
-import "./InvoiceModal.css";
+import { useState } from "react";
+import "./InvoiceForm.css";
 
-Modal.setAppElement("#root");
-
-const InvoiceModal = ({ obra, onClose, onSaved }) => {
+const InvoiceForm = ({ obra, onSave, onAnalyze, onCancel }) => {
   const [archivo, setArchivo] = useState(null);
   const [items, setItems] = useState([]);
   const [errorArchivo, setErrorArchivo] = useState("");
   const [errorItems, setErrorItems] = useState("");
   const [analizando, setAnalizando] = useState(false);
   const [guardando, setGuardando] = useState(false);
-
-  // Cada vez que se abre con otra obra, se limpia todo
-  useEffect(() => {
-    setArchivo(null);
-    setItems([]);
-    setErrorArchivo("");
-    setErrorItems("");
-  }, [obra]);
-
-  const mensajeDeError = (error) => {
-    const errorData = error.response?.data;
-    return errorData?.details?.length
-      ? errorData.details.join(". ")
-      : errorData?.message ||
-          errorData?.error ||
-          "No se pudo conectar con el servidor";
-  };
 
   const elegirArchivo = (e) => {
     const elegido = e.target.files[0];
@@ -55,32 +32,8 @@ const InvoiceModal = ({ obra, onClose, onSaved }) => {
   const analizarFactura = async () => {
     setAnalizando(true);
     try {
-      const token = localStorage.getItem("token");
-      const formData = new FormData();
-      formData.append("image", archivo);
-
-      const respuesta = await axiosConfig.post(
-        `/works/${obra._id}/extract-invoice-items`,
-        formData,
-        {
-          headers: {
-            Authorization: token,
-            "Content-Type": "multipart/form-data",
-          },
-
-          timeout: 45000, // la IA puede tardar más que el resto de las peticiones
-        },
-      );
-
-      const extraidos = respuesta.data.data.items;
-      setItems(extraidos.map((i) => ({ name: i.name, amount: i.amount })));
-      toast(respuesta.data.message); // "Artículos extraídos..." o "cargalos manualmente"
-    } catch (error) {
-      console.error(
-        "Error al analizar factura:",
-        error.response?.data ?? error,
-      );
-      toast.error(mensajeDeError(error));
+      const extraidos = await onAnalyze(archivo);
+      if (extraidos) setItems(extraidos);
     } finally {
       setAnalizando(false);
     }
@@ -102,7 +55,9 @@ const InvoiceModal = ({ obra, onClose, onSaved }) => {
     setItems((prev) => prev.filter((_, i) => i !== indice));
   };
 
-  const confirmar = async () => {
+  const confirmar = async (e) => {
+    e.preventDefault();
+
     if (items.length === 0) {
       setErrorItems("Agregá al menos un artículo");
       return;
@@ -122,41 +77,26 @@ const InvoiceModal = ({ obra, onClose, onSaved }) => {
 
     setGuardando(true);
     try {
-      const token = localStorage.getItem("token");
-      await axiosConfig.post(
-        `/works/${obra._id}/confirm-invoice-items`,
-        {
-          items: items.map((item) => ({
-            name: String(item.name).trim(),
-            amount: Number(item.amount),
-          })),
-        },
-        { headers: { Authorization: token } },
+      await onSave(
+        items.map((item) => ({
+          name: String(item.name).trim(),
+          amount: Number(item.amount),
+        })),
       );
-      toast.success("Factura guardada");
-      onSaved();
-    } catch (error) {
-      toast.error(mensajeDeError(error));
     } finally {
       setGuardando(false);
     }
   };
 
-  const yaGuardados = obra?.invoiceItems || [];
+  const yaGuardados = obra.invoiceItems || [];
   const totalGuardado = yaGuardados.reduce(
     (total, item) => total + (item.amount || 0),
     0,
   );
 
   return (
-    <Modal
-      isOpen={!!obra}
-      onRequestClose={onClose}
-      contentLabel="Factura de la obra"
-      className="editar-obra-modal"
-      overlayClassName="editar-obra-overlay"
-    >
-      <h2 className="editar-obra-title">Factura de {obra?.clientName}</h2>
+    <form onSubmit={confirmar}>
+      <h2 className="editar-obra-title">Factura de {obra.clientName}</h2>
       <p className="editar-obra-direccion">
         Subí una foto de la factura: la IA propone los artículos y vos los
         revisás antes de guardar.
@@ -249,21 +189,21 @@ const InvoiceModal = ({ obra, onClose, onSaved }) => {
         <button
           type="button"
           className="editar-obra-cancelar"
-          onClick={onClose}
+          onClick={onCancel}
+          disabled={guardando}
         >
           Cerrar
         </button>
         <button
-          type="button"
+          type="submit"
           className="editar-obra-guardar"
-          onClick={confirmar}
           disabled={items.length === 0 || guardando}
         >
           {guardando ? "Guardando..." : "Confirmar y guardar"}
         </button>
       </div>
-    </Modal>
+    </form>
   );
 };
 
-export default InvoiceModal;
+export default InvoiceForm;

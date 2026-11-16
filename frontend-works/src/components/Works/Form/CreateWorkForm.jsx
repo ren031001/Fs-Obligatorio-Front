@@ -1,25 +1,28 @@
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router";
+import { NavLink } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { createWorkSchema } from "../../validations/workSchema";
+import { createWorkSchema } from "./validations/workSchema";
 import { axiosConfig } from "../../../utils/axiosConfig";
 
 import { guardarCategorias } from "../../../store/slices/categoriesSlice";
 import "./CreateWorkForm.css";
 
 const CreateWorkForm = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.categories.lista);
+  const usuario = useSelector((state) => state.usuario.datos);
   const [categoriasCargadas, setCategoriasCargadas] = useState(false);
+  const [totalObras, setTotalObras] = useState(null);
 
   const {
     control,
     handleSubmit,
     reset,
+    trigger,
+    getValues,
     formState: { errors, isValid, isSubmitting },
   } = useForm({
     resolver: yupResolver(createWorkSchema),
@@ -44,7 +47,7 @@ const CreateWorkForm = () => {
           headers: { Authorization: token },
         });
         dispatch(guardarCategorias(respuesta.data));
-      } catch (error) {
+      } catch {
         toast.error("No se pudieron cargar las categorías");
       } finally {
         setCategoriasCargadas(true);
@@ -52,6 +55,24 @@ const CreateWorkForm = () => {
     };
     cargarCategorias();
   }, [dispatch]);
+
+  // Cuántas obras tiene el usuario, para saber si llegó al límite del plan plus
+  useEffect(() => {
+    const cargarTotal = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const respuesta = await axiosConfig.get("/works", {
+          params: { page: 1, limit: 1 },
+          headers: { Authorization: token },
+        });
+        setTotalObras(respuesta.data.total);
+      } catch {
+        toast.error("No se pudo comprobar el límite de tu plan");
+        setTotalObras(0); // si falla, el backend igual rechaza la obra al pasarse
+      }
+    };
+    cargarTotal();
+  }, []);
 
   const onSubmit = async (data) => {
     // El backend rechaza strings vacíos en fechas y descripción,
@@ -71,6 +92,7 @@ const CreateWorkForm = () => {
         headers: { Authorization: token },
       });
       toast.success("Obra creada correctamente");
+      setTotalObras((total) => total + 1);
       reset();
     } catch (error) {
       const errorData = error.response?.data;
@@ -83,7 +105,24 @@ const CreateWorkForm = () => {
     }
   };
 
-  if (!categoriasCargadas) return <p>Cargando ...</p>;
+  const limiteAlcanzado =
+    usuario?.plan === "plus" && totalObras >= usuario.plusWorksLimit;
+
+  if (!categoriasCargadas || totalObras === null) return <p>Cargando ...</p>;
+
+  if (limiteAlcanzado) {
+    return (
+      <div className="create-work-page">
+        <div className="create-work-card">
+          <h1 className="create-work-title">Registro de obra</h1>
+          <div className="create-work-aviso">
+            Llegaste al límite de {usuario.plusWorksLimit} obras del plan plus.{" "}
+            <NavLink to="/plan">Pasate a premium</NavLink> para crear más.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="create-work-page">
@@ -185,6 +224,10 @@ const CreateWorkForm = () => {
                   {...field}
                   type="date"
                   className={`create-work-input ${errors.startDate ? "create-work-input-error" : ""}`}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    if (getValues("endDate")) trigger("endDate");
+                  }}
                 />
               )}
             />
@@ -203,6 +246,10 @@ const CreateWorkForm = () => {
                   {...field}
                   type="date"
                   className={`create-work-input ${errors.endDate ? "create-work-input-error" : ""}`}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    if (getValues("startDate")) trigger("startDate");
+                  }}
                 />
               )}
             />

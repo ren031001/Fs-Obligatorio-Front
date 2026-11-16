@@ -10,3 +10,17 @@ export const axiosConfig = axios.create({
     Accept: "application/json",
   },
 });
+
+axiosConfig.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // En /auth/ un 401 es "usuario o contraseña incorrectos": eso lo muestra Login
+    const esAuth = error.config?.url?.includes("/auth/");
+    if (error.response?.status === 401 && !esAuth) {
+      localStorage.clear();
+      sessionStorage.setItem("sesionVencida", "1");
+      window.location.href = "/";
+    }
+    return Promise.reject(error);
+  },
+);

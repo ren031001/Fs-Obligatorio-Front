@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import loginSchema from "../validations/loginSchema";
 import { axiosConfig } from "../../utils/axiosConfig";
 import "./Login.css";
+import { useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,6 +25,12 @@ const Login = () => {
       password: "",
     },
   });
+  useEffect(() => {
+    if (sessionStorage.getItem("sesionVencida")) {
+      sessionStorage.removeItem("sesionVencida");
+      toast.error("Tu sesión venció, volvé a iniciar sesión");
+    }
+  }, []);
 
   const onSubmit = async (data) => {
     try {
@@ -33,7 +40,7 @@ const Login = () => {
       if (response.data?.token) {
         localStorage.setItem("token", response.data.token);
         toast.success("Bienvenido");
-        await navigate("/Works");
+        await navigate("/works");
       }
     } catch (error) {
       console.log(error.response);

@@ -1,0 +1,29 @@
+.factura-guardados {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.factura-guardados ul {
+  margin: 6px 0;
+  padding-left: 18px;
+}
+
+.factura-total {
+  margin: 0;
+  font-weight: 700;
+}
+
+.factura-fila {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.factura-monto {
+  max-width: 120px;
+}

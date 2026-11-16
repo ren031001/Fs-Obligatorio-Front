@@ -39,31 +39,38 @@ const Menu = () => {
   return (
     <div>
       <nav className="menu-barra">
-        <NavLink className="menu-marca" to="/works">
+        <NavLink
+          className="menu-marca"
+          to={usuario?.role === "admin" ? "/categories" : "/works"}
+        >
           Control de obras
         </NavLink>
 
         <div className="menu-links">
-          <NavLink className="menu-link" to="/works" end>
-            Mis obras
-          </NavLink>
-          <NavLink className="menu-link" to="/works/new">
-            Nueva obra
-          </NavLink>
-          <NavLink className="menu-link" to="/plan">
-            Mi plan
-          </NavLink>
-          <NavLink className="menu-link" to="/stats">
-            Estadísticas
-          </NavLink>
-          <NavLink className="menu-link" to="/map">
-            Mapa
-          </NavLink>
-          {usuario?.role === "admin" && (
-            <NavLink className="menu-link" to="/categories">
-              Categorías
-            </NavLink>
-          )}
+          {usuario &&
+            (usuario.role === "admin" ? (
+              <NavLink className="menu-link" to="/categories">
+                Categorías
+              </NavLink>
+            ) : (
+              <>
+                <NavLink className="menu-link" to="/works" end>
+                  Mis obras
+                </NavLink>
+                <NavLink className="menu-link" to="/works/new">
+                  Nueva obra
+                </NavLink>
+                <NavLink className="menu-link" to="/plan">
+                  Mi plan
+                </NavLink>
+                <NavLink className="menu-link" to="/stats">
+                  Estadísticas
+                </NavLink>
+                <NavLink className="menu-link" to="/map">
+                  Mapa
+                </NavLink>
+              </>
+            ))}
         </div>
 
         <button

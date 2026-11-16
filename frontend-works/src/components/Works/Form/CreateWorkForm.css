@@ -106,3 +106,16 @@
     gap: 0;
   }
 }
+.create-work-aviso {
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+}
+
+.create-work-aviso a {
+  font-weight: 600;
+  color: #92400e;
+}

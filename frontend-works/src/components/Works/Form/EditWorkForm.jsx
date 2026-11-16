@@ -1,28 +1,12 @@
-import { useEffect, useState } from "react";
-import Modal from "react-modal";
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSelector } from "react-redux";
-import toast from "react-hot-toast";
-import workSchema from "../validations/workSchema";
-import { axiosConfig } from "../../utils/axiosConfig";
-import { STATES } from "../../utils/workStates";
-import "./EditWorkModal.css";
+import workSchema from "./validations/workSchema";
+import { STATES } from "../../../utils/workStates";
 
-Modal.setAppElement("#root");
-
-const valoresIniciales = {
-  clientName: "",
-  description: "",
-  status: "pendiente",
-  categoryId: "",
-  startDate: "",
-  endDate: "",
-};
-
-const EditWorkModal = ({ obra, onClose, onSaved, onImageUploaded }) => {
+const EditWorkForm = ({ obra, onSave, onUploadImage, onCancel }) => {
   const categories = useSelector((state) => state.categories.lista);
-  const [imagenes, setImagenes] = useState([]);
   const [archivo, setArchivo] = useState(null);
   const [errorImagen, setErrorImagen] = useState("");
   const [subiendo, setSubiendo] = useState(false);
@@ -30,31 +14,22 @@ const EditWorkModal = ({ obra, onClose, onSaved, onImageUploaded }) => {
   const {
     control,
     handleSubmit,
-    reset,
     trigger,
     formState: { errors, isValid, isDirty, isSubmitting },
   } = useForm({
     resolver: yupResolver(workSchema),
     mode: "onChange",
-    defaultValues: valoresIniciales,
+    // El Modal desmonta este formulario al cerrarse, así que cada vez que
+    // se abre arranca de nuevo con los datos de la obra (no hace falta reset)
+    defaultValues: {
+      clientName: obra.clientName,
+      description: obra.description || "",
+      status: obra.status,
+      categoryId: obra.categoryId,
+      startDate: obra.startDate ? obra.startDate.slice(0, 10) : "",
+      endDate: obra.endDate ? obra.endDate.slice(0, 10) : "",
+    },
   });
-
-  // Cada vez que se abre el modal con otra obra, carga sus datos en el formulario
-  useEffect(() => {
-    if (obra) {
-      reset({
-        clientName: obra.clientName,
-        description: obra.description || "",
-        status: obra.status,
-        categoryId: obra.categoryId,
-        startDate: obra.startDate ? obra.startDate.slice(0, 10) : "",
-        endDate: obra.endDate ? obra.endDate.slice(0, 10) : "",
-      });
-    }
-    setImagenes(obra?.images || []);
-    setArchivo(null);
-    setErrorImagen("");
-  }, [obra, reset]);
 
   const onSubmit = async (data) => {
     const cambios = {
@@ -65,25 +40,9 @@ const EditWorkModal = ({ obra, onClose, onSaved, onImageUploaded }) => {
     };
     if (data.startDate) cambios.startDate = data.startDate;
     if (data.endDate) cambios.endDate = data.endDate;
-
-    try {
-      const token = localStorage.getItem("token");
-      await axiosConfig.put(`/works/${obra._id}`, cambios, {
-        headers: { Authorization: token },
-      });
-      toast.success("Obra actualizada");
-      onSaved();
-    } catch (error) {
-      const errorData = error.response?.data;
-      const mensaje = errorData?.details?.length
-        ? errorData.details.join(". ")
-        : errorData?.message ||
-          errorData?.error ||
-          "No se pudo conectar con el servidor";
-      console.error("Respuesta del servidor:", error.response?.data);
-      toast.error(mensaje);
-    }
+    await onSave(cambios);
   };
+
   const elegirArchivo = (e) => {
     const elegido = e.target.files[0];
     setErrorImagen("");
@@ -107,48 +66,20 @@ const EditWorkModal = ({ obra, onClose, onSaved, onImageUploaded }) => {
   const subirImagen = async () => {
     setSubiendo(true);
     try {
-      const token = localStorage.getItem("token");
-      const formData = new FormData();
-      formData.append("image", archivo);
-
-      const respuesta = await axiosConfig.post(
-        `/works/${obra._id}/images`,
-        formData,
-        {
-          headers: {
-            Authorization: token,
-            "Content-Type": "multipart/form-data",
-          },
-        },
-      );
-
-      setImagenes(respuesta.data.data.images);
-      setArchivo(null);
-      toast.success("Imagen subida");
-      onImageUploaded();
-    } catch (error) {
-      const errorData = error.response?.data;
-      toast.error(
-        errorData?.message ||
-          errorData?.error ||
-          "No se pudo conectar con el servidor",
-      );
+      const subida = await onUploadImage(archivo);
+      if (subida) setArchivo(null);
     } finally {
       setSubiendo(false);
     }
   };
 
+  const imagenes = obra.images || [];
+
   return (
-    <Modal
-      isOpen={!!obra}
-      onRequestClose={onClose}
-      contentLabel="Editar obra"
-      className="editar-obra-modal"
-      overlayClassName="editar-obra-overlay"
-    >
+    <form onSubmit={handleSubmit(onSubmit)}>
       <h2 className="editar-obra-title">Editar obra</h2>
       <p className="editar-obra-direccion">
-        <strong>Dirección:</strong> {obra?.officialAddress}
+        <strong>Dirección:</strong> {obra.officialAddress}
         <span> (no se puede modificar)</span>
       </p>
 
@@ -269,6 +200,7 @@ const EditWorkModal = ({ obra, onClose, onSaved, onImageUploaded }) => {
           )}
         </div>
       </div>
+
       <div className="editar-obra-group">
         <label className="editar-obra-label">Imágenes:</label>
 
@@ -309,21 +241,21 @@ const EditWorkModal = ({ obra, onClose, onSaved, onImageUploaded }) => {
         <button
           type="button"
           className="editar-obra-cancelar"
-          onClick={onClose}
+          onClick={onCancel}
+          disabled={isSubmitting}
         >
           Cancelar
         </button>
         <button
-          type="button"
+          type="submit"
           className="editar-obra-guardar"
-          onClick={handleSubmit(onSubmit)}
           disabled={!isValid || !isDirty || isSubmitting}
         >
           {isSubmitting ? "Guardando..." : "Guardar cambios"}
         </button>
       </div>
-    </Modal>
+    </form>
   );
 };
 
-export default EditWorkModal;
+export default EditWorkForm;
