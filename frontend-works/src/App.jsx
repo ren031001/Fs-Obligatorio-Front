@@ -15,14 +15,17 @@ import Mapa from "./components/Mapa/Mapa";
 import RutaAdmin from "./components/Routes/RutaAdmin.jsx";
 import Categorias from "./components/Categorias/Categorias";
 import UserRoute from "./components/Routes/UserRoute";
+import PublicRoute from "./components/Routes/PublicRoute";
 
 const App = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route element={<PublicRoute />}>
+            <Route path="/" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Route>
           <Route element={<RutaProtegida />}>
             <Route element={<Menu />}>
               <Route element={<UserRoute />}>

@@ -19,8 +19,7 @@ const EditWorkForm = ({ obra, onSave, onUploadImage, onCancel }) => {
   } = useForm({
     resolver: yupResolver(workSchema),
     mode: "onChange",
-    // El Modal desmonta este formulario al cerrarse, así que cada vez que
-    // se abre arranca de nuevo con los datos de la obra (no hace falta reset)
+
     defaultValues: {
       clientName: obra.clientName,
       description: obra.description || "",
